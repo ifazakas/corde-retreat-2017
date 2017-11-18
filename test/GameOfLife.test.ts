@@ -1,31 +1,32 @@
-import {} from "jest";
-import { Cell } from "../src/Cell";
+import "jest";
+import Cell from "../src/Cell";
 
-describe("Cell", () => {
+describe("Cell should", () => {
 
   let cell: Cell;
 
   beforeEach(() => {
-    cell = new Cell();
+    cell = Cell.aliveCell();
   });
 
-  it("should die when underpopulation", () => {
+  it("die when under population", () => {
     cell.evolve(1);
     expect(cell.isAlive()).toBe(false);
   });
 
-  it("should live when normal population", () => {
+  it("live when normal population", () => {
     cell.evolve(2);
     expect(cell.isAlive()).toBe(true);
   });
 
-  it("should live when over population", () => {
+  it("die when over population", () => {
     cell.evolve(4);
     expect(cell.isAlive()).toBe(false);
   });
 
-  it("should born when exactly three neighbors", () => {
-    cell.evolve(3);
-    expect(cell.isAlive()).toBe(true);
+  it("born when exactly three neighbors", () => {
+    const deadCell = Cell.deadCell();
+    deadCell.evolve(3);
+    expect(deadCell.isAlive()).toBe(true);
   });
 });

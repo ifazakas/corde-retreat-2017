@@ -1,18 +1,38 @@
+import { int } from "aws-sdk/clients/datapipeline";
+import CellGoingToReborn from "./CellIGoingToReborn";
+import CellOverPopulation from "./CellOverPopulation";
+import CellUnderPopulation from "./CellIUnderPopulation";
 
-
-export class Cell {
+const rules = [
+    new CellGoingToReborn(),
+    new CellOverPopulation(),
+    new CellUnderPopulation(),
+];
+export default class Cell {
     lives: boolean;
-    constructor() {
-        this.lives = true;
+    private constructor(alive: boolean) {
+        this.lives = alive;
     }
 
-    evolve(neighbors: number) {
-        if (neighbors < 2 || neighbors > 3) {
-            this.lives = false;
-        }
-     }
+    static aliveCell() {
+        return new Cell(true);
+    }
 
-    isAlive() {
+    static deadCell() {
+        return new Cell(false);
+    }
+
+    evolve(neighbours: number) {
+        for (const rule of rules) {
+            if (rule.accomplished(this, neighbours)) {
+                return rule.execute();
+            }
+        }
+
+        return Cell.aliveCell();
+    }
+
+    public isAlive(): boolean {
         return this.lives;
     }
 }
